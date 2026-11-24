@@ -3,8 +3,8 @@ from sqlalchemy import text
 
 from src.config.settings import cache, engine
 from src.controllers.workflow import download
-from src.models.tables import audit, cases, evidence, runs
-from src.schemas.workflow import CaseForm, LoginForm, ReviewForm
+from src.models.tables import audit, cases, evidence, requests, runs
+from src.schemas.workflow import CaseForm, LoginForm, ReviewForm, RunForm
 from src.services import domain, workflow
 from src.services.security import current_user, login, operator, reviewer
 
@@ -45,8 +45,23 @@ def list_runs(_=Depends(current_user)):
 
 
 @router.post('/cases/{case_id}/runs', status_code=202)
-def start_run(case_id: int, actor=Depends(operator)):
-    return workflow.enqueue(case_id, actor)
+def start_run(case_id: int, form: RunForm | None = None, actor=Depends(operator)):
+    return workflow.submit(case_id, actor, form.request_id if form else None)
+
+
+@router.get('/requests')
+def list_requests(_=Depends(current_user)):
+    return workflow.recent(requests)
+
+
+@router.get('/requests/{slug}')
+def show_request(slug: str, _=Depends(current_user)):
+    return workflow.show_request(slug)
+
+
+@router.post('/requests/{slug}/withdraw')
+def withdraw_request(slug: str, actor=Depends(operator)):
+    return workflow.withdraw(slug, actor)
 
 
 @router.get('/evidence')

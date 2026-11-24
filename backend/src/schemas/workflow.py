@@ -15,3 +15,7 @@ class CaseForm(BaseModel):
 
 class ReviewForm(BaseModel):
     note: str = Field(min_length=1, max_length=500)
+
+
+class RunForm(BaseModel):
+    request_id: str | None = Field(default=None, max_length=48)

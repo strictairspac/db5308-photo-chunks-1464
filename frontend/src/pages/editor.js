@@ -20,8 +20,8 @@ export function bindEditor(state, api, fail) {
     const payload = readFields(state.draft, state.spec.field_labels);
     const draft = await api('/cases', {method:'POST', data:{title:data.get('title'), payload}});
     try {
-      const run = await api(`/cases/${draft.id}/runs`, {method:'POST'});
-      go(`runs/${run.id}`);
+      const application = await api(`/cases/${draft.id}/runs`, {method:'POST'});
+      go(`runs/${application.run_id}`);
     } catch (error) {
       go(`cases/${draft.id}`);
       fail(new Error(`档案已保存。提交执行失败：${error.message}`));

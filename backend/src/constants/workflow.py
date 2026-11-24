@@ -12,3 +12,9 @@ class Status(StrEnum):
     RUNNING = 'running'
     COMPLETE = 'complete'
     FAILED = 'failed'
+    VOIDED = 'voided'
+
+
+class RequestStatus(StrEnum):
+    ACTIVE = 'active'
+    WITHDRAWN = 'withdrawn'
